@@ -50,15 +50,16 @@ export function createLinkMenu({ explorers: _explorers }: CreateLinkMenu) {
 
   chrome.runtime.onMessage.addListener((message: { type: "selection", text: string }) => {
     if (message.type === "selection" && message.text) {
-      const txHash = message.text.match(/0x[a-fA-F0-9]{64}/)[0]
-      const address = message.text.match(/0x[a-fA-F0-9]{40}/)[0]
+      const txHashM = message.text.match(/0x[a-fA-F0-9]{64}/)
+      const addressM = message.text.match(/0x[a-fA-F0-9]{40}/)
 
-      console.log(txHash, address)
+      const txHash = txHashM ? txHashM[0] : null
+      const address = addressM ? addressM[0] : null
 
       if (txHash || address) {
-        // chrome.contextMenus.update(contextMenuPrefix, { enabled: true });
+        chrome.contextMenus.update(contextMenuPrefix, { enabled: true });
       } else {
-        // chrome.contextMenus.update(contextMenuPrefix, { enabled: false });
+        chrome.contextMenus.update(contextMenuPrefix, { enabled: false });
       }
     }
   });
