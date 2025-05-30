@@ -1,26 +1,15 @@
 import { useState } from "react"
+import Settings from "~settings"
 
 import "~style.css"
 
 function IndexPopup() {
-  const [data, setData] = useState("")
+  const [showSettings, setShowSettings] = useState(false)
 
   return (
-    <div
-      style={{
-        padding: 16
-      }}>
-      <h2 className="text-red-500">
-        Welcome to your{" "}
-        <a href="https://www.plasmo.com" target="_blank">
-          Plasmo
-        </a>{" "}
-        Extension!
-      </h2>
-      <input onChange={(e) => setData(e.target.value)} value={data} />
-      <a href="https://docs.plasmo.com" target="_blank">
-        View Docs
-      </a>
+    <div>
+      <button onClick={() => setShowSettings(!showSettings)}>Settings</button>
+      {showSettings && <Settings />}
     </div>
   )
 }
