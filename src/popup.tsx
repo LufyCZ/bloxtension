@@ -7,8 +7,8 @@ function IndexPopup() {
   const [showSettings, setShowSettings] = useState(false)
 
   return (
-    <div>
-      <button onClick={() => setShowSettings(!showSettings)}>Settings</button>
+    <div className="flex flex-col w-64">
+      <button onClick={() => setShowSettings(!showSettings)}>{showSettings ? "Hide Settings" : "Show Settings"}</button>
       {showSettings && <Settings />}
     </div>
   )
