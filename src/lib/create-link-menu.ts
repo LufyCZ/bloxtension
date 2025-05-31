@@ -1,14 +1,4 @@
-function extractSelection(text: string) {
-  const txHashM = text.match(/0x[a-fA-F0-9]{64}/)
-  const addressM = text.match(/0x[a-fA-F0-9]{40}/)
-
-  const txHash = txHashM ? txHashM[0] : null
-  const address = addressM ? addressM[0] : null
-
-  if (txHash) return { type: "txHash", data: txHash } as const
-  if (address) return { type: "address", data: address } as const
-  return { type: "none" } as const
-}
+import { extractSelection } from "~utils"
 
 function onSelectionListener(message: { type: "selection"; text: string }) {
   if (message.type === "selection" && message.text) {
@@ -22,8 +12,12 @@ function onSelectionListener(message: { type: "selection"; text: string }) {
         visible: true,
         title: `Show ${typeString} on Blockscout`
       })
+      if (selection.type === "address") {
+        chrome.contextMenus.update(`${contextMenuPrefix}-popup`, { visible: true })
+      }
     } else {
       chrome.contextMenus.update(contextMenuPrefix, { visible: false })
+      chrome.contextMenus.update(`${contextMenuPrefix}-popup`, { visible: false })
     }
   }
 }
@@ -36,7 +30,7 @@ function onContextMenuClickListener(
   info: chrome.contextMenus.OnClickData,
   tab?: chrome.tabs.Tab
 ) {
-  if (info.parentMenuItemId !== contextMenuPrefix) {
+  if (info.parentMenuItemId !== contextMenuPrefix && info.parentMenuItemId !== `${contextMenuPrefix}-popup`) {
     return
   }
 
@@ -45,9 +39,18 @@ function onContextMenuClickListener(
   }
 
   const selection = extractSelection(info.selectionText || "")
-  const explorer = explorers.find((e) => e.menuId === info.menuItemId)
+  const explorer = explorers.find((e) => e.menuId === info.menuItemId || `${e.menuId}-popup` === info.menuItemId)
 
   if (!explorer || selection.type === "none") {
+    return
+  }
+
+  if (info.menuItemId === `${explorer.menuId}-popup`) {
+    chrome.tabs.sendMessage(tab.id, {
+      type: "show-blockscout-popup",
+      address: selection.data,
+      chainId: explorer.id
+    })
     return
   }
 
@@ -94,6 +97,7 @@ export function createLinkMenu({ explorers: _explorers }: CreateLinkMenu) {
 
   chrome.contextMenus.create({
     id: `${contextMenuPrefix}-popup`,
+    visible: false,
     title: "Show Transaction History Popup",
     contexts: ["selection"]
   })
@@ -106,8 +110,14 @@ export function createLinkMenu({ explorers: _explorers }: CreateLinkMenu) {
   for (const explorer of explorers) {
     chrome.contextMenus.create({
       id: explorer.menuId,
-      title: `On ${explorer.name}`,
+      title: `${explorer.name}`,
       parentId: contextMenuPrefix,
+      contexts: ["all"]
+    })
+    chrome.contextMenus.create({
+      id: `${explorer.menuId}-popup`,
+      title: `${explorer.name}`,
+      parentId: `${contextMenuPrefix}-popup`,
       contexts: ["all"]
     })
   }
@@ -145,6 +155,12 @@ export function updateLinkMenus({ explorers: newExplorers }: CreateLinkMenu) {
       id: createMenuId(addedExplorer.name),
       title: `On ${addedExplorer.name}`,
       parentId: contextMenuPrefix,
+      contexts: ["all"]
+    })
+    chrome.contextMenus.create({
+      id: `${createMenuId(addedExplorer.name)}-popup`,
+      title: `${addedExplorer.name}`,
+      parentId: `${contextMenuPrefix}-popup`,
       contexts: ["all"]
     })
   }

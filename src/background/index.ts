@@ -39,16 +39,6 @@ chrome.runtime.onInstalled.addListener(() => {
   })
 })
 
-// Handle context menu clicks
-chrome.contextMenus.onClicked.addListener((info, tab) => {
-  if (info.menuItemId === "bloxtension-link-menu-popup" && tab?.id) {
-    // Send message to content script to show popup
-    chrome.tabs.sendMessage(tab.id, {
-      type: "show-blockscout-popup",
-      address: info.selectionText
-    })
-  }
-})
 
 storage.watch({
   "selected-chains": (c) => {
@@ -57,4 +47,3 @@ storage.watch({
   }
 })
 
-export {}

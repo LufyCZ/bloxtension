@@ -16,7 +16,7 @@ window.addEventListener("load", () => {
     if (message.type === "show-blockscout-popup" && message.address) {
       root.unmount()
       const newRoot = createRoot(container)
-      newRoot.render(<BlockscoutPopupWrapper address={message.address} />)
+      newRoot.render(<BlockscoutPopupWrapper address={message.address} chainId={message.chainId} />)
     }
   })
 })
