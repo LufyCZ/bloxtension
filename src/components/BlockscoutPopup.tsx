@@ -5,14 +5,14 @@ import {
 } from "@blockscout/app-sdk"
 import React from "react"
 
-const TransactionPopup = ({ address }: { address: string }) => {
+const TransactionPopup = ({ address, chainId }: { address: string, chainId: string }) => {
   const { openPopup } = useTransactionPopup()
 
   React.useEffect(() => {
     console.log("Opening popup for address:", address)
     try {
       openPopup({
-        chainId: "1", // Ethereum mainnet
+        chainId: chainId,
         address: address
       })
     } catch (error) {
@@ -28,13 +28,13 @@ const TransactionPopup = ({ address }: { address: string }) => {
   return null
 }
 
-const BlockscoutPopupWrapper = ({ address }: { address: string }) => {
+const BlockscoutPopupWrapper = ({ address, chainId }: { address: string, chainId: string }) => {
   console.log("Rendering BlockscoutPopupWrapper with address:", address)
 
   return (
     <NotificationProvider>
       <TransactionPopupProvider>
-        <TransactionPopup address={address} />
+        <TransactionPopup address={address} chainId={chainId} />
       </TransactionPopupProvider>
     </NotificationProvider>
   )

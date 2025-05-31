@@ -1,13 +1,14 @@
 import { useStorage } from "@plasmohq/storage/hook"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { chains } from "./chains"
 import { ChevronRight, SearchIcon } from "lucide-react"
+import { SELECTED_CHAINS_KEY } from "~lib/chain-storage"
 
 function Settings() {
     const [verified, setVerified] = useStorage<boolean>("verified", false)
     const [balance, setBalance] = useStorage<boolean>("balance", false)
     const [idk, setIdk] = useStorage<boolean>("idk", false)
-    const [selectedChains, setSelectedChains] = useStorage<number[]>("selected-chains", [])
+    const [selectedChains, setSelectedChains] = useStorage<number[]>(SELECTED_CHAINS_KEY)
 
     const [search, setSearch] = useState("")
     const [showChains, setShowChains] = useState(false)

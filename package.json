@@ -17,12 +17,17 @@
     "@plasmohq/storage": "^1.15.0",
     "@types/axios": "^0.14.4",
     "axios": "^1.9.0",
+    "@tanstack/react-query": "^5.79.0",
+    "gql.tada": "^1.8.10",
+    "graphql": "^16.11.0",
+    "graphql-request": "^7.2.0",
     "lucide-react": "^0.511.0",
     "plasmo": "0.90.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
   "devDependencies": {
+    "@0no-co/graphqlsp": "^1.12.16",
     "@ianvs/prettier-plugin-sort-imports": "4.1.1",
     "@types/chrome": "0.0.258",
     "@types/node": "20.11.5",
@@ -32,6 +37,7 @@
     "postcss": "^8.5.4",
     "prettier": "3.2.4",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.19.4",
     "typescript": "5.3.3"
   },
   "manifest": {

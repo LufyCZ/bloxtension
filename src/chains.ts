@@ -11327,7 +11327,7 @@ type Chain = {
   ecosystem?: string | string[]
   native_currency?: string | null
   layer: number
-  rollupType: string
+  rollupType?: string | null
   website: string
   explorers: {
     url: string
