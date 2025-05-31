@@ -35,10 +35,14 @@ function hashString(str: string): string {
 // Helper: match Ethereum addresses and tx hashes
 async function findEthereumData() {
   // Get text content from page
-  const text = document.body.innerText;
+  const text = document.body.innerHTML;
 
   // Hash the full content to detect any changes
+  console.time('hashString execution time');
   const currentHash = hashString(text);
+  console.timeEnd('hashString execution time');
+  console.log(`hashString processed ${text.length} characters and returned hash: ${currentHash}`);
+  
   if (currentHash === lastTextHash) {
     return cachedData; // Return cached result if content unchanged
   }
