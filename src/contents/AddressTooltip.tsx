@@ -10,19 +10,25 @@ export const config: PlasmoCSConfig = {
   run_at: "document_end"
 }
 
+interface TokenInfo {
+  symbol: string
+  logo: string
+}
+
 interface TooltipProps {
   address: string
   position: { x: number; y: number }
   onClose: () => void
 }
 
-const AddressTooltip: React.FC<TooltipProps> = ({
+export const AddressTooltip: React.FC<TooltipProps> = ({
   address,
   position,
   onClose
 }) => {
   const [price, setPrice] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
+  const [tokenInfo, setTokenInfo] = useState<TokenInfo | null>(null)
 
   useEffect(() => {
     const fetchPrice = async () => {
@@ -42,8 +48,20 @@ const AddressTooltip: React.FC<TooltipProps> = ({
         setLoading(false)
       }
     }
+    const fetchTokenInfo = async () => {
+      try {
+        const response = await sendToBackground({
+          name: "get-token-info",
+          body: { address }
+        })
+        setTokenInfo(response.message)
+      } catch (error) {
+        console.error("Error fetching token info:", error)
+      }
+    }
 
     fetchPrice()
+    fetchTokenInfo()
   }, [address])
 
   return (
@@ -64,8 +82,23 @@ const AddressTooltip: React.FC<TooltipProps> = ({
         transform: "translate(-50%, 0)",
         pointerEvents: "none"
       }}>
-      <div>Address: {address}</div>
-      <div>Price: {loading ? "Loading..." : price ? `$${price}` : "N/A"}</div>
+      <div className="flex items-center gap-2">
+        {tokenInfo?.logoURI && (
+          <img
+            src={tokenInfo.logoURI}
+            alt={tokenInfo.symbol}
+            className="w-6 h-6 rounded-full"
+          />
+        )}
+        <div className="flex flex-col">
+          {tokenInfo?.symbol && (
+            <span className="font-medium">{tokenInfo.symbol}</span>
+          )}
+          <span className="text-gray-300">
+            Price: {loading ? "Loading..." : price ? `$${price}` : "N/A"}
+          </span>
+        </div>
+      </div>
     </div>
   )
 }
@@ -80,6 +113,27 @@ function isEthereumAddress(text: string): boolean {
   return /^0x[a-fA-F0-9]{40}$/.test(text)
 }
 
+// Create tooltip container and initialize React root
+let root: ReturnType<typeof createRoot> | null = null
+
+try {
+  const tooltipContainer = document.createElement("div")
+  tooltipContainer.id = "react-address-tooltip-container"
+  tooltipContainer.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2147483647;
+  `
+  document.body.appendChild(tooltipContainer)
+  root = createRoot(tooltipContainer)
+} catch (error) {
+  console.error("Failed to initialize tooltip container:", error)
+}
+
 // Function to handle mouseover events
 function handleMouseOver(event: MouseEvent) {
   if (!root) return
@@ -92,6 +146,7 @@ function handleMouseOver(event: MouseEvent) {
     const position = {
       x: rect.left + rect.width / 2 + window.scrollX,
       y: rect.bottom + window.scrollY + 5
+
     }
 
     root.render(
