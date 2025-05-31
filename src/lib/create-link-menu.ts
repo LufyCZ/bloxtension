@@ -8,6 +8,7 @@ interface CreateLinkMenu {
 const contextMenuPrefix = "bloxtension-link-menu"
 
 export function createLinkMenu({ explorers: _explorers }: CreateLinkMenu) {
+  console.log('createLinkMenu')
   chrome.contextMenus.create({
     id: contextMenuPrefix,
     enabled: true,
@@ -29,6 +30,7 @@ export function createLinkMenu({ explorers: _explorers }: CreateLinkMenu) {
   }
 
   chrome.contextMenus.onClicked.addListener((info, tab) => {
+    console.log('onClicked', info, tab)
     if (info.parentMenuItemId !== contextMenuPrefix) {
       return
     }
@@ -49,6 +51,7 @@ export function createLinkMenu({ explorers: _explorers }: CreateLinkMenu) {
   });
 
   chrome.runtime.onMessage.addListener((message: { type: "selection", text: string }, sender, sendResponse) => {
+    console.log("onMessage:selection", message)
     if (message.type === "selection" && message.text) {
       const txHashM = message.text.match(/0x[a-fA-F0-9]{64}/)
       const addressM = message.text.match(/0x[a-fA-F0-9]{40}/)

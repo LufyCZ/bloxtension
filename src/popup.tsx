@@ -16,6 +16,7 @@ function IndexPopup() {
   const [showSettings, setShowSettings] = useState(false)
   const [ethereumData] = useStorage<EthereumData | null>("ethereumData")
 
+  console.log('ethereumData', ethereumData)
   useEffect(() => {
     console.log('in useeffect')
     console.log(ethereumData)

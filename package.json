@@ -30,6 +30,11 @@
     "typescript": "5.3.3"
   },
   "manifest": {
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "{29f68ee6-9875-421d-bc59-d01cfe80f5e7}"
+      }
+    },
     "host_permissions": [
       "https://*/*",
       "scripting",

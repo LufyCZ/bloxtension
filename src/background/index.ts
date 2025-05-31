@@ -2,6 +2,8 @@ import { createLinkMenu } from "~lib/create-link-menu";
 
 export { }
 
+console.log('in background index')
+
 chrome.runtime.onInstalled.addListener(() => {
   createLinkMenu(
     {

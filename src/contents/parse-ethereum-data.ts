@@ -72,11 +72,16 @@ async function findEthereumData() {
 
   try {
     // Send data to background via Plasmo messaging for storage and real-time updates
-    await sendToBackground({
+    const response = await sendToBackground({
       name: "ethereum-data-update",
       body: dataToSend
     });
-    console.log('Ethereum data sent via Plasmo messaging');
+    console.log('response from sendToBackground', response)
+    if (!response?.success) {
+      console.error('Failed to send ethereum data:', response?.error);
+    } else {
+      console.log('Ethereum data sent via Plasmo messaging');
+    }
   } catch (error) {
     console.error('Failed to send ethereum data:', error);
   }
