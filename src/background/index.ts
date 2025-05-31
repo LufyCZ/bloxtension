@@ -19,12 +19,12 @@ function parseStorageChains(ids: string[]) {
   })
 }
 
-chrome.runtime.onInstalled.addListener(() => {
-  storage.get<string[]>("selected-chains").then(chainIds => {
-    const chains = parseStorageChains(chainIds)
-    console.log(chains)
-    createLinkMenu({ explorers: chains })
-  })
+chrome.runtime.onInstalled.addListener(async () => {
+  const DEFAULT_CHAIN_IDS = ["30", "63"]
+  const savedChains = await storage.get<string[]>("selected-chains")
+  const chains = parseStorageChains(savedChains?.length ? savedChains : DEFAULT_CHAIN_IDS)
+  console.log(chains)
+  createLinkMenu({ explorers: chains })
 });
 
 storage.watch({

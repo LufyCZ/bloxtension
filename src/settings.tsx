@@ -5,7 +5,7 @@ import { ChevronRight, SearchIcon } from "lucide-react"
 
 function Settings() {
     const [isVerified, setIsVerified] = useStorage<boolean>("is-verified", false)
-    const [selectedChains, setSelectedChains] = useStorage<number[]>("selected-chains", [])
+    const [selectedChains, setSelectedChains] = useStorage<number[]>("selected-chains", [30, 63])
 
     const [search, setSearch] = useState("")
     const [showChains, setShowChains] = useState(false)
