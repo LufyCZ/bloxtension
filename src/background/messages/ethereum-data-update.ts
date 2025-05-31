@@ -10,7 +10,10 @@ interface EthereumData {
 
 console.log('in message script')
 
-const storage = new Storage()
+// Use storage.local instead of storage.sync to avoid quota limitations
+const storage = new Storage({
+  area: "local"
+})
 
 const handler: PlasmoMessaging.MessageHandler<EthereumData> = async (req, res) => {
   try {

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { useStorage } from "@plasmohq/storage/hook"
+import { Storage } from "@plasmohq/storage"
 import Settings from "~settings"
 import SettingsIcon from "data-base64:./../assets/settings-icon.svg"
 import BlockscoutIcon from "data-base64:./../assets/blockscout.svg"
@@ -12,9 +13,18 @@ interface EthereumData {
   timestamp: number
 }
 
+// Create storage instance using local area
+const storage = new Storage({
+  area: "local"
+})
+
 function IndexPopup() {
   const [showSettings, setShowSettings] = useState(false)
-  const [ethereumData] = useStorage<EthereumData | null>("ethereumData")
+  // Use storage.local to match the background script
+  const [ethereumData] = useStorage<EthereumData | null>({
+    key: "ethereumData",
+    instance: storage
+  })
 
   console.log('ethereumData', ethereumData)
   useEffect(() => {
