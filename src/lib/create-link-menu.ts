@@ -1,3 +1,15 @@
+function extractSelection(text: string) {
+  const txHashM = text.match(/0x[a-fA-F0-9]{64}/)
+  const addressM = text.match(/0x[a-fA-F0-9]{40}/)
+
+  const txHash = txHashM ? txHashM[0] : null
+  const address = addressM ? addressM[0] : null
+
+  if (txHash) return { type: "txHash", data: txHash } as const
+  if (address) return { type: "address", data: address } as const
+  return { type: 'none' } as const
+}
+
 interface CreateLinkMenu {
   explorers: {
     name: string
@@ -11,7 +23,7 @@ export function createLinkMenu({ explorers: _explorers }: CreateLinkMenu) {
   console.log('createLinkMenu')
   chrome.contextMenus.create({
     id: contextMenuPrefix,
-    enabled: true,
+    visible: true,
     title: "Blockscout",
     contexts: ["selection"],
   });
@@ -24,34 +36,58 @@ export function createLinkMenu({ explorers: _explorers }: CreateLinkMenu) {
   for (const explorer of explorers) {
     chrome.contextMenus.create({
       id: explorer.id,
-      title: explorer.name,
+      title: `On ${explorer.name}`,
       parentId: contextMenuPrefix,
+      contexts: ['all']
     });
   }
 
+  chrome.runtime.onMessage.addListener((message: { type: "selection", text: string }) => {
+    if (message.type === "selection" && message.text) {
+      const selection = extractSelection(message.text)
+
+      if (selection.type !== "none") {
+        const typeString = selection.type === 'address' ? "Address" : "Transaction"
+
+        chrome.contextMenus.update(contextMenuPrefix, { visible: true, title: `Show ${typeString} on Blockscout` });
+      } else {
+        chrome.contextMenus.update(contextMenuPrefix, { visible: false });
+      }
+    }
+  });
+
   chrome.contextMenus.onClicked.addListener((info, tab) => {
-    console.log('onClicked', info, tab)
     if (info.parentMenuItemId !== contextMenuPrefix) {
       return
     }
 
+    const selection = extractSelection(info.selectionText)
     const explorer = explorers.find((e) => e.id === info.menuItemId)
 
-    if (!explorer) {
+    if (!explorer || selection.type === 'none') {
       return
     }
 
     if (chrome.tabs && chrome.tabs.executeScript) {
+      let url = explorer.url
+
+      switch (selection.type) {
+        case 'address':
+          url += `/address/${selection.data}`
+          break
+        case 'txHash':
+          url += `/tx/${selection.data}`
+      }
+
       chrome.tabs.create({
         active: true,
         index: tab.index + 1,
-        url: explorer.url
+        url: url
       })
     }
   });
 
   chrome.runtime.onMessage.addListener((message: { type: "selection", text: string }, sender, sendResponse) => {
-    console.log("onMessage:selection", message)
     if (message.type === "selection" && message.text) {
       const txHashM = message.text.match(/0x[a-fA-F0-9]{64}/)
       const addressM = message.text.match(/0x[a-fA-F0-9]{40}/)

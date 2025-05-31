@@ -36,11 +36,10 @@
       }
     },
     "host_permissions": [
-      "https://*/*",
-      "scripting",
-      "contextMenus"
+      "https://*/*"
     ],
     "permissions": [
+      "contextMenus",
       "activeTab",
       "scripting"
     ],

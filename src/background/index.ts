@@ -9,7 +9,7 @@ chrome.runtime.onInstalled.addListener(() => {
     {
       explorers: [{
         name: "Ethereum",
-        url: "https://eth.blockscout.com/"
+        url: "https://eth.blockscout.com"
       }]
     }
   )
