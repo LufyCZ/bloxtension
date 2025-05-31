@@ -6,6 +6,7 @@ interface EthereumData {
   transactions: string[]
   url: string
   timestamp: number
+  tabId: number
 }
 
 console.log('in message script')
@@ -18,7 +19,9 @@ const storage = new Storage({
 const handler: PlasmoMessaging.MessageHandler<EthereumData> = async (req, res) => {
   try {
     // Store the data for popup access using Plasmo storage
-    await storage.set("ethereumData", req.body)
+    const { tabId, ...data } = req.body
+    await storage.set(`ethereumData_tab${tabId}`, data)
+    console.log('ethereumData_tab', tabId)
     console.log('Ethereum data stored in background');
     res.send({ success: true });
   } catch (error) {

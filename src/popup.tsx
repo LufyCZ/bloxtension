@@ -18,19 +18,64 @@ const storage = new Storage({
   area: "local"
 })
 
-function IndexPopup() {
-  const [showSettings, setShowSettings] = useState(false)
-  // Use storage.local to match the background script
+// Component that handles ethereum data display - only renders when we have a tab ID
+function EthereumDataDisplay({ activeTabId }: { activeTabId: number }) {
+  const storageKey = `ethereumData_tab${activeTabId}`
+  
   const [ethereumData] = useStorage<EthereumData | null>({
-    key: "ethereumData",
+    key: storageKey,
     instance: storage
   })
 
-  console.log('ethereumData', ethereumData)
+  return (
+    <div className="space-y-4">
+      <>
+        {ethereumData?.url && <div className="text-sm text-gray-600">
+          Found on: {new URL(ethereumData.url).hostname}
+        </div>
+        }
+
+        {ethereumData?.addresses?.length > 0 && (
+          <div>
+            <h3 className="mb-2 text-sm font-medium">Ethereum Addresses ({ethereumData.addresses.length})</h3>
+          </div>
+        )}
+
+        {ethereumData?.transactions?.length > 0 && (
+          <div>
+            <h3 className="mb-2 text-sm font-medium">Transaction Hashes ({ethereumData.transactions.length})</h3>
+          </div>
+        )}
+
+        {ethereumData?.addresses?.length === 0 && ethereumData?.transactions?.length === 0 && (
+          <div className="py-4 text-center text-gray-500">
+            No Ethereum addresses or transactions found on this page
+          </div>
+        )}
+      </>
+    </div>
+  )
+}
+
+function IndexPopup() {
+  const [showSettings, setShowSettings] = useState(false)
+  const [activeTabId, setActiveTabId] = useState<number | null>(null)
+
   useEffect(() => {
-    console.log('in useeffect')
-    console.log(ethereumData)
-  }, [ethereumData])
+    const getTabId = async () => {
+      try {
+        const [tab] = await chrome.tabs.query({
+          active: true,
+          currentWindow: true
+        })
+        console.log('Active tab ID:', tab.id)
+        setActiveTabId(tab.id ?? null)
+      } catch (error) {
+        console.error('Failed to get active tab:', error)
+      }
+    }
+    getTabId()
+  }, [])
 
   return (
     <div className="flex flex-col h-64 w-96">
@@ -48,32 +93,15 @@ function IndexPopup() {
       {showSettings && <Settings />}
 
       {!showSettings && (
-        <div className="space-y-4">
-          <>
-            {ethereumData?.url && <div className="text-sm text-gray-600">
-              Found on: {new URL(ethereumData.url).hostname}
+        <>
+          {activeTabId ? (
+            <EthereumDataDisplay activeTabId={activeTabId} />
+          ) : (
+            <div className="flex justify-center items-center flex-1">
+              <div className="text-gray-500">Loading...</div>
             </div>
-            }
-
-            {ethereumData?.addresses?.length > 0 && (
-              <div>
-                <h3 className="mb-2 text-sm font-medium">Ethereum Addresses ({ethereumData.addresses.length})</h3>
-              </div>
-            )}
-
-            {ethereumData?.transactions?.length > 0 && (
-              <div>
-                <h3 className="mb-2 text-sm font-medium">Transaction Hashes ({ethereumData.transactions.length})</h3>
-              </div>
-            )}
-
-            {ethereumData?.addresses?.length === 0 && ethereumData?.transactions?.length === 0 && (
-              <div className="py-4 text-center text-gray-500">
-                No Ethereum addresses or transactions found on this page
-              </div>
-            )}
-          </>
-        </div>
+          )}
+        </>
       )}
     </div>
   )
