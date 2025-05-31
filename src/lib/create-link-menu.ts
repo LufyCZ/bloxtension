@@ -76,7 +76,7 @@ const contextMenuPrefix = "bloxtension-link-menu"
 export function createLinkMenu({ explorers: _explorers }: CreateLinkMenu) {
   chrome.contextMenus.create({
     id: contextMenuPrefix,
-    visible: true,
+    visible: false,
     title: "Blockscout",
     contexts: ["selection"],
   });
