@@ -50,7 +50,8 @@
           "<all_urls>"
         ],
         "js": [
-          "../src/contents/parse-ethereum-data.ts"
+          "../src/contents/parse-ethereum-data.ts",
+          "../src/putback/blockscout-popup.tsx"
         ]
       }
     ]
