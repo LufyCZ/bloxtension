@@ -7,36 +7,47 @@ function extractSelection(text: string) {
 
   if (txHash) return { type: "txHash", data: txHash } as const
   if (address) return { type: "address", data: address } as const
-  return { type: 'none' } as const
+  return { type: "none" } as const
 }
 
-function onSelectionListener(message: { type: "selection", text: string }) {
+function onSelectionListener(message: { type: "selection"; text: string }) {
   if (message.type === "selection" && message.text) {
     const selection = extractSelection(message.text)
 
     if (selection.type !== "none") {
-      const typeString = selection.type === 'address' ? "Address" : "Transaction"
+      const typeString =
+        selection.type === "address" ? "Address" : "Transaction"
 
-      chrome.contextMenus.update(contextMenuPrefix, { visible: true, title: `Show ${typeString} on Blockscout` });
+      chrome.contextMenus.update(contextMenuPrefix, {
+        visible: true,
+        title: `Show ${typeString} on Blockscout`
+      })
     } else {
-      chrome.contextMenus.update(contextMenuPrefix, { visible: false });
+      chrome.contextMenus.update(contextMenuPrefix, { visible: false })
     }
   }
 }
 
-let explorers: { url: string, name: string, id: string, menuId: string }[] | undefined
+let explorers:
+  | { url: string; name: string; id: string; menuId: string }[]
+  | undefined
 
-function onContextMenuClickListener(info: chrome.contextMenus.OnClickData, tab?: chrome.tabs.Tab) {
+function onContextMenuClickListener(
+  info: chrome.contextMenus.OnClickData,
+  tab?: chrome.tabs.Tab
+) {
   if (info.parentMenuItemId !== contextMenuPrefix) {
     return
   }
 
-  if (!explorers) { return }
+  if (!explorers) {
+    return
+  }
 
   const selection = extractSelection(info.selectionText || "")
   const explorer = explorers.find((e) => e.menuId === info.menuItemId)
 
-  if (!explorer || selection.type === 'none') {
+  if (!explorer || selection.type === "none") {
     return
   }
 
@@ -44,10 +55,10 @@ function onContextMenuClickListener(info: chrome.contextMenus.OnClickData, tab?:
     let url = explorer.url
 
     switch (selection.type) {
-      case 'address':
+      case "address":
         url += `/address/${selection.data}`
         break
-      case 'txHash':
+      case "txHash":
         url += `/tx/${selection.data}`
     }
 
@@ -78,8 +89,14 @@ export function createLinkMenu({ explorers: _explorers }: CreateLinkMenu) {
     id: contextMenuPrefix,
     visible: false,
     title: "Blockscout",
-    contexts: ["selection"],
-  });
+    contexts: ["selection"]
+  })
+
+  chrome.contextMenus.create({
+    id: `${contextMenuPrefix}-popup`,
+    title: "Show Transaction History Popup",
+    contexts: ["selection"]
+  })
 
   explorers = _explorers.map((explorer) => ({
     ...explorer,
@@ -91,12 +108,12 @@ export function createLinkMenu({ explorers: _explorers }: CreateLinkMenu) {
       id: explorer.menuId,
       title: `On ${explorer.name}`,
       parentId: contextMenuPrefix,
-      contexts: ['all']
-    });
+      contexts: ["all"]
+    })
   }
 
-  chrome.runtime.onMessage.addListener(onSelectionListener);
-  chrome.contextMenus.onClicked.addListener(onContextMenuClickListener);
+  chrome.runtime.onMessage.addListener(onSelectionListener)
+  chrome.contextMenus.onClicked.addListener(onContextMenuClickListener)
 }
 
 export function updateLinkMenus({ explorers: newExplorers }: CreateLinkMenu) {
@@ -107,20 +124,28 @@ export function updateLinkMenus({ explorers: newExplorers }: CreateLinkMenu) {
     return
   }
 
-  const removedExplorers = previousExplorers.filter(prevExplorer => !newExplorers.find(newExplorer => newExplorer.id === prevExplorer.id))
+  const removedExplorers = previousExplorers.filter(
+    (prevExplorer) =>
+      !newExplorers.find((newExplorer) => newExplorer.id === prevExplorer.id)
+  )
 
   for (const removedExplorer of removedExplorers) {
     chrome.contextMenus.remove(removedExplorer.menuId)
   }
 
-  const addedExplorers = newExplorers.filter(newExplorer => !previousExplorers.find(prevExplorer => prevExplorer.id === newExplorer.id))
+  const addedExplorers = newExplorers.filter(
+    (newExplorer) =>
+      !previousExplorers.find(
+        (prevExplorer) => prevExplorer.id === newExplorer.id
+      )
+  )
 
   for (const addedExplorer of addedExplorers) {
     chrome.contextMenus.create({
       id: createMenuId(addedExplorer.name),
       title: `On ${addedExplorer.name}`,
       parentId: contextMenuPrefix,
-      contexts: ['all']
+      contexts: ["all"]
     })
   }
 

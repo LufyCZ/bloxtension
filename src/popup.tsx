@@ -2,8 +2,8 @@ import { useState, useEffect } from "react"
 import { useStorage } from "@plasmohq/storage/hook"
 import { Storage } from "@plasmohq/storage"
 import Settings from "~settings"
-import SettingsIcon from "data-base64:./../assets/settings-icon.svg"
 import BlockscoutIcon from "data-base64:./../assets/blockscout.svg"
+import { SettingsIcon } from "lucide-react"
 import "~style.css"
 
 interface EthereumData {
@@ -31,24 +31,24 @@ function EthereumDataDisplay({ activeTabId }: { activeTabId: number }) {
     <div className="space-y-4">
       <>
         {ethereumData?.url && <div className="text-sm text-gray-600">
-            Found on: {new URL(ethereumData.url).hostname}
-          </div>
+          Found on: {new URL(ethereumData.url).hostname}
+        </div>
         }
-        
+
         {ethereumData?.addresses?.length > 0 && (
           <div>
-            <h3 className="font-medium text-sm mb-2">Ethereum Addresses ({ethereumData.addresses.length})</h3>
+            <h3 className="mb-2 text-sm font-medium">Ethereum Addresses ({ethereumData.addresses.length})</h3>
           </div>
         )}
 
         {ethereumData?.transactions?.length > 0 && (
           <div>
-            <h3 className="font-medium text-sm mb-2">Transaction Hashes ({ethereumData.transactions.length})</h3>
+            <h3 className="mb-2 text-sm font-medium">Transaction Hashes ({ethereumData.transactions.length})</h3>
           </div>
-        )} 
+        )}
 
         {ethereumData?.addresses?.length === 0 && ethereumData?.transactions?.length === 0 && (
-          <div className="text-center text-gray-500 py-4">
+          <div className="py-4 text-center text-gray-500">
             No Ethereum addresses or transactions found on this page
           </div>
         )}
@@ -78,14 +78,14 @@ function IndexPopup() {
   }, [])
 
   return (
-    <div className="flex flex-col w-96 h-64">
-      <div className="flex flex-row justify-between">
+    <div className="flex flex-col h-64 w-96">
+      <div className="flex flex-row justify-between mb-1 border-b border-gray-200">
         <div className="flex flex-row justify-start p-2">
           <img src={BlockscoutIcon} alt="Blockscout" />
         </div>
         <div className="flex flex-row justify-end p-2">
           <button onClick={() => setShowSettings(!showSettings)}>
-            <img src={SettingsIcon} alt="Settings" />
+            <SettingsIcon width={27} height={27} />
           </button>
         </div>
       </div>
