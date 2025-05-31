@@ -90,7 +90,7 @@ function handleMouseOver(event: MouseEvent) {
   if (isEthereumAddress(text)) {
     const rect = target.getBoundingClientRect()
     const position = {
-      x: rect.left + window.scrollX,
+      x: rect.left + rect.width / 2 + window.scrollX,
       y: rect.bottom + window.scrollY + 5
     }
 
