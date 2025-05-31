@@ -5,25 +5,25 @@ import { ChevronRight, SearchIcon } from "lucide-react"
 import { SELECTED_CHAINS_KEY } from "~lib/chain-storage"
 
 function Settings() {
-    const [verified, setVerified] = useStorage<boolean>("verified", false)
-    const [balance, setBalance] = useStorage<boolean>("balance", false)
-    const [idk, setIdk] = useStorage<boolean>("idk", false)
+    // const [verified, setVerified] = useStorage<boolean>("verified", false)
+    // const [balance, setBalance] = useStorage<boolean>("balance", false)
+    // const [idk, setIdk] = useStorage<boolean>("idk", false)
     const [selectedChains, setSelectedChains] = useStorage<number[]>(SELECTED_CHAINS_KEY)
 
     const [search, setSearch] = useState("")
-    const [showChains, setShowChains] = useState(false)
-    const [showDetailSettings, setShowDetailSettings] = useState(false)
+    const [showChains, setShowChains] = useState(true)
+    // const [showDetailSettings, setShowDetailSettings] = useState(false)
 
-    if (showChains) {
+    if (showChains && selectedChains) {
         return (
             <div className="flex flex-col gap-2 pl-4 overflow-x-hidden">
-                <div className="flex flex-row items-center gap-1">
+                {/* <div className="flex flex-row items-center gap-1">
                     <button className="flex flex-row items-center gap-1" onClick={() => setShowChains(false)}>
                         <ChevronRight className="rotate-180" width={16} height={16} />
                         <p className="text-base">Chains</p>
                     </button>
-                </div>
-                <div className="flex flex-row items-center h-6 gap-2 mb-3">
+                </div> */}
+                <div className="flex flex-row items-center h-6 gap-2 pt-4 mb-3">
                     <input
                         type={"text"}
                         placeholder=""
@@ -65,63 +65,64 @@ function Settings() {
             </div>
         )
     }
-    if (showDetailSettings) {
-        return (
-            <div className="flex flex-col gap-2 pl-4">
-                <div className="flex flex-row items-center gap-1">
-                    <button className="flex flex-row items-center gap-1" onClick={() => setShowDetailSettings(false)}>
-                        <ChevronRight className="rotate-180" width={16} height={16} />
-                        <p className="text-base">Details to show</p>
-                    </button>
-                </div>
-                <div className="flex flex-col gap-2">
-                    <p>Accounts</p>
-                    <div className="flex flex-row items-center gap-2 pl-4">
-                        <input
-                            type={"checkbox"}
-                            checked={balance}
-                            onChange={(e) => setBalance(e.target.checked)}
-                        />
-                        <p>Balance</p>
-                    </div>
-                    <p>Transactions</p>
-                    <div className="flex flex-row items-center gap-2 pl-4">
-                        <input
-                            type={"checkbox"}
-                            checked={idk}
-                            onChange={(e) => setIdk(e.target.checked)}
-                        />
-                        <p>IDK</p>
-                    </div>
-                    <p>Contracts</p>
-                    <div className="flex flex-row items-center gap-2 pl-4">
-                        <input
-                            type={"checkbox"}
-                            checked={verified}
-                            onChange={(e) => setVerified(e.target.checked)}
-                        />
-                        <p>Verified</p>
-                    </div>
-                </div>
-            </div>
-        )
-    }
-    return (
-        <div className="flex flex-col w-64 p-4 text-base">
-            <div className="flex flex-row items-center gap-2">
-                <button className="flex flex-row items-center gap-1" onClick={() => setShowChains(true)}>
-                    <ChevronRight width={16} height={16} />
-                    <p>Set chains</p>
-                </button>
-            </div>
-            <div className="flex flex-row items-center gap-2">
-                <button className="flex flex-row items-center gap-1" onClick={() => setShowDetailSettings(true)}>
-                    <ChevronRight width={16} height={16} />
-                    <p>Set details to show</p>
-                </button>
-            </div>
-        </div>
-    )
+    // }
+    // if (showDetailSettings) {
+    //     return (
+    //         <div className="flex flex-col gap-2 pl-4">
+    //             <div className="flex flex-row items-center gap-1">
+    //                 <button className="flex flex-row items-center gap-1" onClick={() => setShowDetailSettings(false)}>
+    //                     <ChevronRight className="rotate-180" width={16} height={16} />
+    //                     <p className="text-base">Details to show</p>
+    //                 </button>
+    //             </div>
+    //             <div className="flex flex-col gap-2">
+    //                 <p>Accounts</p>
+    //                 <div className="flex flex-row items-center gap-2 pl-4">
+    //                     <input
+    //                         type={"checkbox"}
+    //                         checked={balance}
+    //                         onChange={(e) => setBalance(e.target.checked)}
+    //                     />
+    //                     <p>Balance</p>
+    //                 </div>
+    //                 <p>Transactions</p>
+    //                 <div className="flex flex-row items-center gap-2 pl-4">
+    //                     <input
+    //                         type={"checkbox"}
+    //                         checked={idk}
+    //                         onChange={(e) => setIdk(e.target.checked)}
+    //                     />
+    //                     <p>IDK</p>
+    //                 </div>
+    //                 <p>Contracts</p>
+    //                 <div className="flex flex-row items-center gap-2 pl-4">
+    //                     <input
+    //                         type={"checkbox"}
+    //                         checked={verified}
+    //                         onChange={(e) => setVerified(e.target.checked)}
+    //                     />
+    //                     <p>Verified</p>
+    //                 </div>
+    //             </div>
+    //         </div>
+    //     )
+    // }
+    // return (
+    //     <div className="flex flex-col w-64 p-4 text-base">
+    //         <div className="flex flex-row items-center gap-2">
+    //             <button className="flex flex-row items-center gap-1" onClick={() => setShowChains(true)}>
+    //                 <ChevronRight width={16} height={16} />
+    //                 <p>Set chains</p>
+    //             </button>
+    //         </div>
+    //         <div className="flex flex-row items-center gap-2">
+    //             <button className="flex flex-row items-center gap-1" onClick={() => setShowDetailSettings(true)}>
+    //                 <ChevronRight width={16} height={16} />
+    //                 <p>Set details to show</p>
+    //             </button>
+    //         </div>
+    //     </div>
+    // )
 }
 
 export default Settings
