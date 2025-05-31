@@ -1,6 +1,6 @@
 import { createRoot } from "react-dom/client"
 
-import BlockscoutPopupWrapper from "./components/BlockscoutPopup"
+import BlockscoutPopupWrapper from "../components/BlockscoutPopup"
 
 window.addEventListener("load", () => {
   console.log(

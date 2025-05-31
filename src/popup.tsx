@@ -14,25 +14,12 @@ interface EthereumData {
 
 function IndexPopup() {
   const [showSettings, setShowSettings] = useState(false)
-  const [ethereumData, loading] = useStorage<EthereumData | null>("ethereumData")
+  const [ethereumData] = useStorage<EthereumData | null>("ethereumData")
 
-  const refreshData = async () => {
-    try {
-      // Request fresh data from current tab
-      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
-      if (tab.id) {
-        chrome.tabs.sendMessage(tab.id, { action: "refreshEthereumData" }, (response) => {
-          if (chrome.runtime.lastError) {
-            console.error('Message sending failed:', chrome.runtime.lastError)
-          } else if (response) {
-            console.log('Refresh response:', response)
-          }
-        })
-      }
-    } catch (error) {
-      console.error('Failed to refresh data:', error)
-    }
-  }
+  useEffect(() => {
+    console.log('in useeffect')
+    console.log(ethereumData)
+  }, [ethereumData])
 
   return (
     <div className="flex flex-col w-80 p-4">
@@ -42,14 +29,7 @@ function IndexPopup() {
           <h1 className="text-lg font-semibold">Bloxtension</h1>
         </div>
         <div className="flex space-x-2">
-          <button 
-            onClick={refreshData}
-            className="p-1 hover:bg-gray-100 rounded text-sm"
-            title="Refresh data"
-          >
-            🔄
-          </button>
-          <button 
+          <button
             onClick={() => setShowSettings(!showSettings)}
             className="p-1 hover:bg-gray-100 rounded"
           >
@@ -62,37 +42,30 @@ function IndexPopup() {
 
       {!showSettings && (
         <div className="space-y-4">
-          {loading ? (
-            <div className="text-center text-gray-500">Loading...</div>
-          ) : ethereumData ? (
             <>
-              <div className="text-sm text-gray-600">
-                Found on: {new URL(ethereumData.url).hostname}
-              </div>
+              {ethereumData?.url && <div className="text-sm text-gray-600">
+                  Found on: {new URL(ethereumData.url).hostname}
+                </div>
+              }
               
-              {ethereumData.addresses.length > 0 && (
+              {ethereumData?.addresses?.length > 0 && (
                 <div>
                   <h3 className="font-medium text-sm mb-2">Ethereum Addresses ({ethereumData.addresses.length})</h3>
                 </div>
               )}
 
-              {ethereumData.transactions.length > 0 && (
+              {ethereumData?.transactions?.length > 0 && (
                 <div>
                   <h3 className="font-medium text-sm mb-2">Transaction Hashes ({ethereumData.transactions.length})</h3>
                 </div>
               )} 
 
-              {ethereumData.addresses.length === 0 && ethereumData.transactions.length === 0 && (
+              {ethereumData?.addresses?.length === 0 && ethereumData?.transactions?.length === 0 && (
                 <div className="text-center text-gray-500 py-4">
                   No Ethereum addresses or transactions found on this page
                 </div>
               )}
             </>
-          ) : (
-            <div className="text-center text-gray-500 py-4">
-              No data available. Visit a page with Ethereum addresses or transactions.
-            </div>
-          )}
         </div>
       )}
     </div>

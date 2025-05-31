@@ -8,9 +8,9 @@ interface EthereumData {
   timestamp: number
 }
 
-const storage = new Storage({
-  area: "local"
-})
+console.log('in message script')
+
+const storage = new Storage()
 
 const handler: PlasmoMessaging.MessageHandler<EthereumData> = async (req, res) => {
   try {

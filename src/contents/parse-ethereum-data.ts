@@ -60,11 +60,6 @@ async function findEthereumData() {
   lastTextHash = currentHash;
   cachedData = { addresses, transactions };
 
-  console.log('found addresses')
-  console.log(addresses)
-  console.log('found transactions')
-  console.log(transactions)
-
   // Send data using Plasmo messaging (works in both Chrome and Firefox)
   const dataToSend = {
     addresses,
@@ -72,6 +67,8 @@ async function findEthereumData() {
     url: window.location.href,
     timestamp: Date.now()
   };
+  console.log('data to send')
+  console.log(dataToSend)
 
   try {
     // Send data to background via Plasmo messaging for storage and real-time updates
@@ -86,25 +83,6 @@ async function findEthereumData() {
 
   return cachedData;
 }
-
-// Listen for messages from popup
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action !== "refreshEthereumData") {
-    return;
-  }
-
-  // Force refresh by clearing cache
-  lastTextHash = '';
-  findEthereumData().then(() => {
-    sendResponse({ success: true });
-  }).catch((error) => {
-    console.error('Failed to refresh ethereum data:', error);
-    sendResponse({ success: false, error: error.message });
-  });
-  
-  // Return true to indicate we'll respond asynchronously
-  return true;
-});
 
 // Run on initial load
 if (document.readyState === 'loading') {
