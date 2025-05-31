@@ -65,6 +65,7 @@ export const AddressTooltip: React.FC<TooltipProps> = ({
   }, [address])
 
   return (
+    price ?
     <div
       style={{
         position: "fixed",
@@ -77,7 +78,7 @@ export const AddressTooltip: React.FC<TooltipProps> = ({
         fontSize: "14px",
         zIndex: 10000,
         boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
-        maxWidth: "300px",
+        maxWidth: "400px",
         wordBreak: "break-all",
         transform: "translate(-50%, 0)",
         pointerEvents: "none"
@@ -88,21 +89,23 @@ export const AddressTooltip: React.FC<TooltipProps> = ({
             src={tokenInfo.logoURI}
             alt={tokenInfo.symbol}
             width={16}
+            style={{
+              display: "inline-block",
+              marginTop: "-3px"
+            }}
             height={16}
             className="w-6 h-6 rounded-full"
           />
         )}
         {tokenInfo?.symbol && ( 
-          <>
-            <span style={{ marginLeft: "4px", marginTop: "2px" }} className="font-medium">{tokenInfo.symbol}</span>
-            <br />
-          </>
+          <span style={{ marginLeft: "4px", display: "inline-block" }} className="font-medium">{tokenInfo.symbol}</span>
         )}
-        <span className="text-gray-300">
-          Price: {loading ? "Loading..." : price ? `$${price}` : "N/A"}
-        </span>
+      </div>
+      <div className="text-gray-300">
+        Price: {loading ? "Loading..." : price ? `$${price}` : "N/A"}
       </div>
     </div>
+    : <></>
   )
 }
 
