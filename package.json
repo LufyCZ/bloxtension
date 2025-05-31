@@ -5,13 +5,14 @@
   "description": "A Blockscout-enabled tool for convenient, multi-chain address, contract and transaction lookups.",
   "author": "me@lufy.cz",
   "scripts": {
-    "dev": "plasmo dev",
-    "build": "plasmo build",
+    "dev": "plasmo dev --target=firefox-mv3 --hmr-host=0.0.0.0 --hmr-port=1815",
+    "build": "plasmo build --target=firefox-mv3",
     "package": "plasmo package"
   },
   "dependencies": {
     "@blockscout/app-sdk": "^0.1.0",
     "@plasmohq/storage": "^1.15.0",
+    "@plasmohq/messaging": "^0.7.1",
     "plasmo": "0.90.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"
@@ -29,10 +30,29 @@
     "typescript": "5.3.3"
   },
   "manifest": {
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "{29f68ee6-9875-421d-bc59-d01cfe80f5e7}"
+      }
+    },
     "host_permissions": [
       "https://*/*",
       "scripting",
       "contextMenus"
+    ],
+    "permissions": [
+      "activeTab",
+      "scripting"
+    ],
+    "content_scripts": [
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "../src/contents/parse-ethereum-data.ts"
+        ]
+      }
     ]
   },
   "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
