@@ -5,4 +5,9 @@
 body {
     background-color: #2A2A2A;
     color: #fff;
+    scrollbar-width: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }

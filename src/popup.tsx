@@ -23,18 +23,14 @@ function IndexPopup() {
   }, [ethereumData])
 
   return (
-    <div className="flex flex-col w-80 p-4">
-      <div className="flex flex-row justify-between items-center mb-4">
-        <div className="flex flex-row items-center">
-          <img src={BlockscoutIcon} alt="Blockscout" className="w-6 h-6 mr-2" />
-          <h1 className="text-lg font-semibold">Bloxtension</h1>
+    <div className="flex flex-col w-96 h-64">
+      <div className="flex flex-row justify-between">
+        <div className="flex flex-row justify-start p-2">
+          <img src={BlockscoutIcon} alt="Blockscout" />
         </div>
-        <div className="flex space-x-2">
-          <button
-            onClick={() => setShowSettings(!showSettings)}
-            className="p-1 hover:bg-gray-100 rounded"
-          >
-            <img src={SettingsIcon} alt="Settings" className="w-5 h-5" />
+        <div className="flex flex-row justify-end p-2">
+          <button onClick={() => setShowSettings(!showSettings)}>
+            <img src={SettingsIcon} alt="Settings" />
           </button>
         </div>
       </div>
