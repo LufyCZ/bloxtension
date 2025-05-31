@@ -24,6 +24,7 @@ window.addEventListener("load", () => {
   let unmountTimeout: NodeJS.Timeout | null = null
 
   // Add mouseover event listener to the entire document
+  /*
   document.addEventListener("mouseover", (event) => {
     const target = event.target as HTMLElement
     const text = target.textContent || ""
@@ -61,4 +62,5 @@ window.addEventListener("load", () => {
       }, 300)
     }
   })
+  */
 })
