@@ -12,7 +12,7 @@ export const config: PlasmoCSConfig = {
 
 interface TokenInfo {
   symbol: string
-  logo: string
+  logoURI: string
 }
 
 interface TooltipProps {
@@ -67,7 +67,7 @@ export const AddressTooltip: React.FC<TooltipProps> = ({
   return (
     <div
       style={{
-        position: "absolute",
+        position: "fixed",
         left: `${position?.x ?? 0}px`,
         top: `${position?.y ?? 0}px`,
         background: "#2d3748",
@@ -87,17 +87,20 @@ export const AddressTooltip: React.FC<TooltipProps> = ({
           <img
             src={tokenInfo.logoURI}
             alt={tokenInfo.symbol}
+            width={16}
+            height={16}
             className="w-6 h-6 rounded-full"
           />
         )}
-        <div className="flex flex-col">
-          {tokenInfo?.symbol && (
-            <span className="font-medium">{tokenInfo.symbol}</span>
-          )}
-          <span className="text-gray-300">
-            Price: {loading ? "Loading..." : price ? `$${price}` : "N/A"}
-          </span>
-        </div>
+        {tokenInfo?.symbol && ( 
+          <>
+            <span style={{ marginLeft: "4px", marginTop: "2px" }} className="font-medium">{tokenInfo.symbol}</span>
+            <br />
+          </>
+        )}
+        <span className="text-gray-300">
+          Price: {loading ? "Loading..." : price ? `$${price}` : "N/A"}
+        </span>
       </div>
     </div>
   )
@@ -107,29 +110,39 @@ export const AddressTooltip: React.FC<TooltipProps> = ({
 let root: ReturnType<typeof createRoot> | null = null
 let tooltipContainer: HTMLElement | null = null
 let observer: MutationObserver | null = null
+let currentHoveredElement: HTMLElement | null = null
+let currentAddress: string | null = null
 
 // Function to check if text is an Ethereum address
 function isEthereumAddress(text: string): boolean {
   return /^0x[a-fA-F0-9]{40}$/.test(text)
 }
 
+// Function to calculate position from element
+function calculatePosition(element: HTMLElement) {
+  const rect = element.getBoundingClientRect()
+  return {
+    x: rect.left + rect.width / 2,
+    y: rect.bottom + 5
+  }
+}
 
-try {
-  const tooltipContainer = document.createElement("div")
-  tooltipContainer.id = "react-address-tooltip-container"
-  tooltipContainer.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 2147483647;
-  `
-  document.body.appendChild(tooltipContainer)
-  root = createRoot(tooltipContainer)
-} catch (error) {
-  console.error("Failed to initialize tooltip container:", error)
+// Function to update tooltip position
+function updateTooltipPosition() {
+  if (!root || !currentHoveredElement || !currentAddress) return
+  
+  const position = calculatePosition(currentHoveredElement)
+  root.render(
+    <AddressTooltip
+      address={currentAddress}
+      position={position}
+      onClose={() => {
+        root?.render(null)
+        currentHoveredElement = null
+        currentAddress = null
+      }}
+    />
+  )
 }
 
 // Function to handle mouseover events
@@ -140,20 +153,9 @@ function handleMouseOver(event: MouseEvent) {
   const text = target.textContent || ""
 
   if (isEthereumAddress(text)) {
-    const rect = target.getBoundingClientRect()
-    const position = {
-      x: rect.left + rect.width / 2 + window.scrollX,
-      y: rect.bottom + window.scrollY + 5
-
-    }
-
-    root.render(
-      <AddressTooltip
-        address={text}
-        position={position}
-        onClose={() => root?.render(null)}
-      />
-    )
+    currentHoveredElement = target
+    currentAddress = text
+    updateTooltipPosition()
   }
 }
 
@@ -161,6 +163,15 @@ function handleMouseOver(event: MouseEvent) {
 function handleMouseOut() {
   if (root) {
     root.render(null)
+    currentHoveredElement = null
+    currentAddress = null
+  }
+}
+
+// Function to handle scroll events
+function handleScroll() {
+  if (currentHoveredElement && currentAddress) {
+    updateTooltipPosition()
   }
 }
 
@@ -168,6 +179,7 @@ function handleMouseOut() {
 function cleanup() {
   document.removeEventListener("mouseover", handleMouseOver)
   document.removeEventListener("mouseout", handleMouseOut)
+  document.removeEventListener("scroll", handleScroll, true)
   if (observer) {
     observer.disconnect()
   }
@@ -204,6 +216,7 @@ export default function initializeAddressTooltip() {
   // Add event listeners to the document
   document.addEventListener("mouseover", handleMouseOver)
   document.addEventListener("mouseout", handleMouseOut)
+  document.addEventListener("scroll", handleScroll, true)
 
   // Watch for dynamic content changes
   observer = new MutationObserver((mutations) => {
