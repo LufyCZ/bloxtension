@@ -48,7 +48,7 @@ export function createLinkMenu({ explorers: _explorers }: CreateLinkMenu) {
     }
   });
 
-  chrome.runtime.onMessage.addListener((message: { type: "selection", text: string }) => {
+  chrome.runtime.onMessage.addListener((message: { type: "selection", text: string }, sender, sendResponse) => {
     if (message.type === "selection" && message.text) {
       const txHashM = message.text.match(/0x[a-fA-F0-9]{64}/)
       const addressM = message.text.match(/0x[a-fA-F0-9]{40}/)
@@ -62,5 +62,6 @@ export function createLinkMenu({ explorers: _explorers }: CreateLinkMenu) {
         chrome.contextMenus.update(contextMenuPrefix, { enabled: false });
       }
     }
+    // Don't return anything - let other listeners handle their messages
   });
 }
