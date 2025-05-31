@@ -113,8 +113,6 @@ function isEthereumAddress(text: string): boolean {
   return /^0x[a-fA-F0-9]{40}$/.test(text)
 }
 
-// Create tooltip container and initialize React root
-let root: ReturnType<typeof createRoot> | null = null
 
 try {
   const tooltipContainer = document.createElement("div")
