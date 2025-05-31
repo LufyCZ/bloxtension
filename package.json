@@ -15,6 +15,8 @@
     "@blockscout/app-sdk": "^0.1.0",
     "@plasmohq/messaging": "^0.7.1",
     "@plasmohq/storage": "^1.15.0",
+    "@types/axios": "^0.14.4",
+    "axios": "^1.9.0",
     "lucide-react": "^0.511.0",
     "plasmo": "0.90.5",
     "react": "18.2.0",
@@ -59,5 +61,5 @@
       }
     ]
   },
-  "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
+  "packageManager ": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
 }
