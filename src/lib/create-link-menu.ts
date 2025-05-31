@@ -10,64 +10,37 @@ function extractSelection(text: string) {
   return { type: 'none' } as const
 }
 
-interface CreateLinkMenu {
-  explorers: {
-    name: string
-    url: string
-  }[]
+function onSelectionListener(message: { type: "selection", text: string }) {
+  if (message.type === "selection" && message.text) {
+    const selection = extractSelection(message.text)
+
+    if (selection.type !== "none") {
+      const typeString = selection.type === 'address' ? "Address" : "Transaction"
+
+      chrome.contextMenus.update(contextMenuPrefix, { visible: true, title: `Show ${typeString} on Blockscout` });
+    } else {
+      chrome.contextMenus.update(contextMenuPrefix, { visible: false });
+    }
+  }
 }
 
-const contextMenuPrefix = "bloxtension-link-menu"
+let explorers: { url: string, name: string, id: string, menuId: string }[] | undefined
 
-export function createLinkMenu({ explorers: _explorers }: CreateLinkMenu) {
-  console.log('createLinkMenu')
-  chrome.contextMenus.create({
-    id: contextMenuPrefix,
-    visible: true,
-    title: "Blockscout",
-    contexts: ["selection"],
-  });
-
-  const explorers = _explorers.map((explorer) => ({
-    ...explorer,
-    id: `${contextMenuPrefix}-${explorer.name.replaceAll(" ", "-")}`
-  }))
-
-  for (const explorer of explorers) {
-    chrome.contextMenus.create({
-      id: explorer.id,
-      title: `${explorer.name}`,
-      parentId: contextMenuPrefix,
-      contexts: ['all']
-    });
+function onContextMenuClickListener(info: chrome.contextMenus.OnClickData, tab?: chrome.tabs.Tab) {
+  if (info.parentMenuItemId !== contextMenuPrefix) {
+    return
   }
 
-  chrome.runtime.onMessage.addListener((message: { type: "selection", text: string }) => {
-    if (message.type === "selection" && message.text) {
-      const selection = extractSelection(message.text)
+  if (!explorers) { return }
 
-      if (selection.type !== "none") {
-        const typeString = selection.type === 'address' ? "Address" : "Transaction"
+  const selection = extractSelection(info.selectionText || "")
+  const explorer = explorers.find((e) => e.menuId === info.menuItemId)
 
-        chrome.contextMenus.update(contextMenuPrefix, { visible: true, title: `Show ${typeString} on Blockscout` });
-      } else {
-        chrome.contextMenus.update(contextMenuPrefix, { visible: false });
-      }
-    }
-  });
+  if (!explorer || selection.type === 'none') {
+    return
+  }
 
-  chrome.contextMenus.onClicked.addListener((info, tab) => {
-    if (info.parentMenuItemId !== contextMenuPrefix) {
-      return
-    }
-
-    const selection = extractSelection(info.selectionText || '')
-    const explorer = explorers.find((e) => e.id === info.menuItemId)
-
-    if (!explorer || selection.type === 'none') {
-      return
-    }
-
+  if (chrome.tabs) {
     let url = explorer.url
 
     switch (selection.type) {
@@ -76,7 +49,6 @@ export function createLinkMenu({ explorers: _explorers }: CreateLinkMenu) {
         break
       case 'txHash':
         url += `/tx/${selection.data}`
-        break
     }
 
     chrome.tabs.create({
@@ -84,5 +56,76 @@ export function createLinkMenu({ explorers: _explorers }: CreateLinkMenu) {
       index: tab ? tab.index + 1 : undefined,
       url: url
     })
+  }
+}
+
+function createMenuId(chainName: string) {
+  return `${contextMenuPrefix}-${chainName.replaceAll(" ", "-")}`
+}
+
+interface CreateLinkMenu {
+  explorers: {
+    id: string
+    name: string
+    url: string
+  }[]
+}
+
+const contextMenuPrefix = "bloxtension-link-menu"
+
+export function createLinkMenu({ explorers: _explorers }: CreateLinkMenu) {
+  chrome.contextMenus.create({
+    id: contextMenuPrefix,
+    visible: true,
+    title: "Blockscout",
+    contexts: ["selection"],
   });
+
+  explorers = _explorers.map((explorer) => ({
+    ...explorer,
+    menuId: createMenuId(explorer.name)
+  }))
+
+  for (const explorer of explorers) {
+    chrome.contextMenus.create({
+      id: explorer.menuId,
+      title: `On ${explorer.name}`,
+      parentId: contextMenuPrefix,
+      contexts: ['all']
+    });
+  }
+
+  chrome.runtime.onMessage.addListener(onSelectionListener);
+  chrome.contextMenus.onClicked.addListener(onContextMenuClickListener);
+}
+
+export function updateLinkMenus({ explorers: newExplorers }: CreateLinkMenu) {
+  const previousExplorers = explorers
+
+  if (!previousExplorers) {
+    createLinkMenu({ explorers: newExplorers })
+    return
+  }
+
+  const removedExplorers = previousExplorers.filter(prevExplorer => !newExplorers.find(newExplorer => newExplorer.id === prevExplorer.id))
+
+  for (const removedExplorer of removedExplorers) {
+    chrome.contextMenus.remove(removedExplorer.menuId)
+  }
+
+  const addedExplorers = newExplorers.filter(newExplorer => !previousExplorers.find(prevExplorer => prevExplorer.id === newExplorer.id))
+
+  for (const addedExplorer of addedExplorers) {
+    chrome.contextMenus.create({
+      id: createMenuId(addedExplorer.name),
+      title: `On ${addedExplorer.name}`,
+      parentId: contextMenuPrefix,
+      contexts: ['all']
+    })
+  }
+
+  explorers = newExplorers.map((explorer) => ({
+    ...explorer,
+    menuId: createMenuId(explorer.name)
+  }))
 }

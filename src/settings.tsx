@@ -1,8 +1,7 @@
 import { useStorage } from "@plasmohq/storage/hook"
 import { useState } from "react"
-import chains from "./chains.json"
-import ArrowIcon from "data-base64:./../assets/arrow.svg"
-import SearchIcon from "data-base64:./../assets/search.svg"
+import { chains } from "./chains"
+import { ChevronRight, SearchIcon } from "lucide-react"
 
 function Settings() {
     const [isVerified, setIsVerified] = useStorage<boolean>("is-verified", false)
@@ -28,7 +27,7 @@ function Settings() {
                             setSearch(e.target.value)
                         }}
                     />
-                    <img src={SearchIcon} alt="search" className="h-4 w-4" />
+                    <SearchIcon width={16} height={16} />
                 </div>
                 <div className="flex flex-col gap-2">
                     {Object.entries(chains)
@@ -76,14 +75,13 @@ function Settings() {
         )
     }
     return (
-        <div
-            className="flex flex-col p-4 w-64 text-base">
-            <div className="flex flex-row gap-2">
-                <img src={ArrowIcon} alt="arrow" />
+        <div className="flex flex-col p-4 w-64 text-base">
+            <div className="flex flex-row gap-2 items-center">
+                <ChevronRight width={16} height={16} />
                 <button onClick={() => setShowChains(true)}>Set chains</button>
             </div>
-            <div className="flex flex-row gap-2">
-                <img src={ArrowIcon} alt="arrow" />
+            <div className="flex flex-row gap-2 items-center">
+                <ChevronRight width={16} height={16} />
                 <button onClick={() => setShowDetailSettings(true)}>Set details to show</button>
             </div>
         </div>

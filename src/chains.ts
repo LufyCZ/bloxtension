@@ -1,4 +1,4 @@
-{
+export const chains = {
   "1": {
     "name": "Ethereum",
     "description": "Decentralized global computing platform supporting smart contracts & P2P apps.",
@@ -674,23 +674,6 @@
     "explorers": [
       {
         "url": "https://explorer.fusespark.io/",
-        "hostedBy": "blockscout"
-      }
-    ]
-  },
-  "130": {
-    "name": "Unichain",
-    "description": "Designed for DeFi. Powered by Uniswap. Optimized to be the home for liquidity across chains.",
-    "logo": "https://cdn.prod.website-files.com/644a5b7efad46e3cd70deafb/672e20307ba9b03f0026ddee_Unichain.png",
-    "ecosystem": "Optimism",
-    "isTestnet": false,
-    "layer": 2,
-    "rollupType": "optimistic",
-    "native_currency": "ETH",
-    "website": "https://www.unichain.org/",
-    "explorers": [
-      {
-        "url": "https://unichain.blockscout.com",
         "hostedBy": "blockscout"
       }
     ]
@@ -2486,23 +2469,6 @@
       {
         "url": "https://explorer.testnet.inco.org/",
         "hostedBy": "self"
-      }
-    ]
-  },
-  "1315": {
-    "name": "Story Aeneid",
-    "description": "Story is a purpose-built Layer 1 blockchain that tokenizes intellectual property into a programmable store of value in an AI-driven world.",
-    "logo": "https://blockscout-icons.s3.us-east-1.amazonaws.com/story.png",
-    "ecosystem": "Cosmos",
-    "isTestnet": true,
-    "layer": 1,
-    "rollupType": null,
-    "native_currency": "IP",
-    "website": "https://www.story.foundation/",
-    "explorers": [
-      {
-        "url": "https://aeneid.storyscan.xyz",
-        "hostedBy": "blockscout"
       }
     ]
   },
@@ -6376,7 +6342,7 @@
         "hostedBy": "self"
       }
     ]
-  }, 
+  },
   "64002": {
     "name": "IDEX",
     "description": "Omnichain perpetuals DEX",
@@ -7514,7 +7480,7 @@
         "hostedBy": "self"
       }
     ]
-  }, 
+  },
   "648541": {
     "name": "LACNet",
     "description": "General purpose permissioned public chain focused on Latin America and Caribbean blockchain ecosystems.",
@@ -8263,40 +8229,6 @@
       }
     ]
   },
-  "420120000": {
-    "name": "Optimism Interop Devnet 0",
-    "description": "Devnet for testing interoperability messages",
-    "logo": "https://uploads-ssl.webflow.com/644a5b7efad46e3cd70deafb/65afe534f95466e8c914ac5b_optimism.png",
-    "ecosystem": "Optimism",
-    "isTestnet": true,
-    "layer": 2,
-    "rollupType": "optimistic",
-    "native_currency": "ETH",
-    "website": "https://www.optimism.io/",
-    "explorers": [
-      {
-        "url": "https://optimism-interop-alpha-0.blockscout.com/",
-        "hostedBy": "blockscout"
-      }
-    ]
-  },
-  "420120001": {
-    "name": "Optimism Interop Devnet 1",
-    "description": "Devnet for testing interoperability messages",
-    "logo": "https://uploads-ssl.webflow.com/644a5b7efad46e3cd70deafb/65afe534f95466e8c914ac5b_optimism.png",
-    "ecosystem": "Optimism",
-    "isTestnet": true,
-    "layer": 2,
-    "rollupType": "optimistic",
-    "native_currency": "ETH",
-    "website": "https://www.optimism.io/",
-    "explorers": [
-      {
-        "url": "https://optimism-interop-alpha-1.blockscout.com/",
-        "hostedBy": "blockscout"
-      }
-    ]
-  },
   "666666666": {
     "name": "Degen Chain",
     "description": "Enables Casters to reward others with DEGEN for posting quality content.",
@@ -8399,23 +8331,6 @@
       }
     ]
   },
-  "1093502521": {
-    "name": "Moonveil Testnet",
-    "description": "A gamer-first ecosystem, building the Moonveil L2 powered by $MORE.",
-    "logo": "https://blockscout-icons.s3.us-east-1.amazonaws.com/moonveil.png",
-    "ecosystem": "Ethereum",
-    "isTestnet": true,
-    "layer": 2,
-    "rollupType": "zk",
-    "native_currency": "MORE",
-    "website": "https://moonveil.gg/",
-    "explorers": [
-      {
-        "url": "https://blockscout.testnet.moonveil.gg/",
-        "hostedBy": "self"
-      }
-    ]
-  },
   "1122334455": {
     "name": "Wire Foundation",
     "description": "Governing board for the Wire Network to help determine the future state of the network.",
@@ -8498,23 +8413,6 @@
       {
         "url": "https://mainnet.explorer.rarichain.org/",
         "hostedBy": "self"
-      }
-    ]
-  },
-  "1417429182": {
-    "name": "WilderWorld",
-    "description": "An immersive, decentralized metaverse that combines photorealistic graphics, artificial intelligence, and blockchain technology to create a vast, player-driven virtual world",
-    "logo": "https://d2e6b8w31txsjq.cloudfront.net/WilderWorld.png",
-    "ecosystem": "Polygon",
-    "isTestnet": true,
-    "layer": 2,
-    "rollupType": "zk",
-    "native_currency": "Z",
-    "website": "https://www.wilderworld.com/",
-    "explorers": [
-      {
-        "url": "https://zephyr-blockscout.eu-north-2.gateway.fm/",
-        "hostedBy": "gateway"
       }
     ]
   },
@@ -11398,8 +11296,8 @@
     "website": "https://moonveil.gg/",
     "explorers": [
       {
-      "url": "https://moonveil-testnet-blockscout.eu-north-2.gateway.fm/",
-      "hostedBy": "gateway"
+        "url": "https://moonveil-testnet-blockscout.eu-north-2.gateway.fm/",
+        "hostedBy": "gateway"
       }
     ]
   },
@@ -11414,9 +11312,25 @@
     "website": "",
     "explorers": [
       {
-      "url": "https://arkreen-zk-devnet-blockscout.eu-north-2.gateway.fm/",
-      "hostedBy": "gateway"
+        "url": "https://arkreen-zk-devnet-blockscout.eu-north-2.gateway.fm/",
+        "hostedBy": "gateway"
       }
     ]
   }
+} as Record<string, Chain>
+
+type Chain = {
+  name: string,
+  description: string
+  logo: string
+  isTestnet: boolean
+  ecosystem?: string | string[]
+  native_currency?: string | null
+  layer: number
+  rollupType: string
+  website: string
+  explorers: {
+    url: string
+    hostedBy: string
+  }[]
 }
