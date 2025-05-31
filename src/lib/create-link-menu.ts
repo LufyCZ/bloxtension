@@ -36,7 +36,7 @@ export function createLinkMenu({ explorers: _explorers }: CreateLinkMenu) {
   for (const explorer of explorers) {
     chrome.contextMenus.create({
       id: explorer.id,
-      title: `On ${explorer.name}`,
+      title: `${explorer.name}`,
       parentId: contextMenuPrefix,
       contexts: ['all']
     });
@@ -61,46 +61,28 @@ export function createLinkMenu({ explorers: _explorers }: CreateLinkMenu) {
       return
     }
 
-    const selection = extractSelection(info.selectionText)
+    const selection = extractSelection(info.selectionText || '')
     const explorer = explorers.find((e) => e.id === info.menuItemId)
 
     if (!explorer || selection.type === 'none') {
       return
     }
 
-    if (chrome.tabs && chrome.tabs.executeScript) {
-      let url = explorer.url
+    let url = explorer.url
 
-      switch (selection.type) {
-        case 'address':
-          url += `/address/${selection.data}`
-          break
-        case 'txHash':
-          url += `/tx/${selection.data}`
-      }
-
-      chrome.tabs.create({
-        active: true,
-        index: tab.index + 1,
-        url: url
-      })
+    switch (selection.type) {
+      case 'address':
+        url += `/address/${selection.data}`
+        break
+      case 'txHash':
+        url += `/tx/${selection.data}`
+        break
     }
-  });
 
-  chrome.runtime.onMessage.addListener((message: { type: "selection", text: string }, sender, sendResponse) => {
-    if (message.type === "selection" && message.text) {
-      const txHashM = message.text.match(/0x[a-fA-F0-9]{64}/)
-      const addressM = message.text.match(/0x[a-fA-F0-9]{40}/)
-
-      const txHash = txHashM ? txHashM[0] : null
-      const address = addressM ? addressM[0] : null
-
-      if (txHash || address) {
-        chrome.contextMenus.update(contextMenuPrefix, { enabled: true });
-      } else {
-        chrome.contextMenus.update(contextMenuPrefix, { enabled: false });
-      }
-    }
-    // Don't return anything - let other listeners handle their messages
+    chrome.tabs.create({
+      active: true,
+      index: tab ? tab.index + 1 : undefined,
+      url: url
+    })
   });
 }
