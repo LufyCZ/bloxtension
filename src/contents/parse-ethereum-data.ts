@@ -64,12 +64,18 @@ async function findEthereumData() {
   lastTextHash = currentHash;
   cachedData = { addresses, transactions };
 
+  const { message: tabId } = await sendToBackground({
+    name: "getTabId",
+  })
+  console.log('tabId', tabId)
+
   // Send data using Plasmo messaging (works in both Chrome and Firefox)
   const dataToSend = {
     addresses,
     transactions,
     url: window.location.href,
-    timestamp: Date.now()
+    timestamp: Date.now(),
+    tabId,
   };
   console.log('data to send')
   console.log(dataToSend)
