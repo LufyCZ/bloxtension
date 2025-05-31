@@ -5,7 +5,8 @@
   "description": "A Blockscout-enabled tool for convenient, multi-chain address, contract and transaction lookups.",
   "author": "me@lufy.cz",
   "scripts": {
-    "dev": "plasmo dev --target=firefox-mv3 --hmr-host=0.0.0.0 --hmr-port=1815",
+    "dev:chrome": "plasmo dev --hmr-host=0.0.0.0 --hmr-port=1815",
+    "dev:firefox": "plasmo dev --target=firefox-mv3 --hmr-host=0.0.0.0 --hmr-port=1815",
     "build": "plasmo build --target=firefox-mv3",
     "package": "plasmo package"
   },
