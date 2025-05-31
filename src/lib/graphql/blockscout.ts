@@ -50,14 +50,22 @@ export async function getAddressesMultichain({
 }: {
   addresses: string[],
 }) {
+  console.log('addresses', addresses)
+
   const chains = await getSelectedChains()
+
+  console.log('chains', chains)
 
   const results = await Promise.allSettled(chains.map((c) => getAddresses({ addresses, url: c.url }).then(data => ({
     chain: c,
     data: data
   }))))
 
+  console.log('results', results)
+
   const successes = results.filter((r) => r.status === 'fulfilled') as Extract<(typeof results)[number], { status: "fulfilled" }>[]
+
+  console.log('successes', successes)
 
   return successes.map((s) => s.value).filter((e) => e.data.length)
 }

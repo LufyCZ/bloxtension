@@ -44,8 +44,9 @@ function EthereumDataDisplay({ activeTabId }: { activeTabId: number }) {
   console.log(storageKey, ethereumData)
 
   const { data } = useQuery({
-    queryKey: [ethereumData?.addresses, ethereumData?.transactions],
+    queryKey: ['fetchEthereumDataQuery', ethereumData?.addresses, ethereumData?.transactions],
     queryFn: async () => {
+      console.log('ethereumData', ethereumData)
       const addressesP = getAddressesMultichain({
         addresses: ethereumData!.addresses
       })
@@ -57,6 +58,10 @@ function EthereumDataDisplay({ activeTabId }: { activeTabId: number }) {
         addressesP,
         transactionsP
       ])
+
+      console.log('in useQuery')
+      console.log('addresses', addresses)
+      console.log('transactions', transactions)
 
       return { addresses, transactions }
     },
